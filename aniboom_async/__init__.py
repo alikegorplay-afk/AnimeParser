@@ -9,7 +9,7 @@ from .pagination import AsyncAniBoomPagination
 
 
 class AsyncAniBoom(BasicAnimeApi):
-    def __init__(self, session: httpx.AsyncClient, engine = 'html.parser', domen: str = 'animego.me'):
+    def __init__(self, session: httpx.AsyncClient, engine = 'html.parser', domen: str = 'https://animego.me'):
         super().__init__(domen, engine)
         self.aniboom = AnimeBoomParser(engine)
         self.session = session
