@@ -2,7 +2,7 @@ from typing import Dict
 
 import httpx
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 class Player:
     def __init__(self, domen: str = 'https://animego.me', engine: str = 'html.parser'):
@@ -18,9 +18,16 @@ class Player:
         if data.get('status') != 'success':
             # NOTE: Поменять на StatusError
             raise AttributeError(f"Неожиданный статус ответа: {data.get('status')}")
+        elif not (html_code := data.get('content')):
+            # NOTE: Поменять на NotFindError
+            raise AttributeError("Не был обнаружен 'content'")
+        
+        with open('test.html', 'w', encoding='utf-8') as file:
+            file.write(html_code)
+        
+        soup = BeautifulSoup(html_code, self.engine)
         
         
-    
     def fetch(self, url: str, method: str = 'GET', *args, **kwargs):
         response = httpx.request(method, url, *args, **kwargs)
         response.raise_for_status()

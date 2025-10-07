@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag, _IncomingMarkup
 
 from core.parsers import BasicAnimeParser, BasicAnimeParserMini
 from core.models import AnimeRow
@@ -191,3 +191,24 @@ class AnimeBoomPageParser(BasicAnimeParserMini):
         if url := soup.find("a", class_="d-block"):
             return url.get('href')
         raise not_find('poster')
+    
+class PlayerParser:
+    def __init__(self, engine: str = 'html.parser'):
+        self.engine = engine
+    
+    def parse_player(self, html_code: _IncomingMarkup):
+        soup = BeautifulSoup(html_code, self.engine)
+        
+        return 
+    
+    @staticmethod
+    def find_dubbing(soup: BeautifulSoup) -> Tag:
+        pass
+    
+    @staticmethod
+    def find_player(soup: BeautifulSoup) -> Tag:
+        pass
+    
+    @staticmethod
+    def filter_anime(player: Tag, dubbing: Tag) -> None:
+        pass
