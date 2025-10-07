@@ -7,7 +7,8 @@ from .models import BaseAnimeInfo, AnimeRow, BaseMiniAnimeInfo
 from .pagination import BasePagination
 
 class BasicAnimeApi(ABC):
-    def __init__(self, engine: str = 'html.parser'):
+    def __init__(self, domen: str = 'https://animego.me', engine: str = 'html.parser'):
+        self.domen = domen
         self.engine = engine
     
     @abstractmethod

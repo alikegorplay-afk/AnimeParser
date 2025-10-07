@@ -1,3 +1,5 @@
+from urllib.parse import quote, urljoin
+
 import httpx
 
 from core.parsers import BasicAnimeApi
@@ -7,8 +9,8 @@ from .pagination import AniBoomPagination
 
 
 class AniBoom(BasicAnimeApi):
-    def __init__(self, engine = 'html.parser'):
-        super().__init__(engine)
+    def __init__(self, engine = 'html.parser', domen: str = 'animego.me'):
+        super().__init__(domen, engine)
         self.aniboom = AnimeBoomParser(engine)
         
     def get_info(self, url: str):
@@ -19,18 +21,18 @@ class AniBoom(BasicAnimeApi):
     
     def find_anime(self, query: str):
         return AniBoomPagination._find(
-            f'https://animego.me/search/anime?q={query.replace(' ', '%20')}&type=list&page={'{}'}',
+            urljoin(self.domen, f"search/anime?q={quote(query)}&type=list&page={'{}'}"),
             self.engine
         )
         
     def find_manga(self, query: str):
         return AniBoomPagination._find(
-            f'https://animego.me/search/manga?q={query.replace(' ', '%20')}&type=list&page={'{}'}',
+            urljoin(self.domen, f"search/manga?q={quote(query)}&type=list&page={'{}'}"),
             self.engine
         )
         
     def find_people(self, query: str):
         return AniBoomPagination._find(
-            f'https://animego.me/search/people?q={query.replace(' ', '%20')}&type=list&page={'{}'}',
+            urljoin(self.domen, f"search/people?q={quote(query)}&type=list&page={'{}'}"),
             self.engine
         )
