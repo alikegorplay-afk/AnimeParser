@@ -3,3 +3,6 @@ venv
 main.py
 
 .vscode
+.ruff_cache
+
+main.py
