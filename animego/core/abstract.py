@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Union
+from urllib.parse import urljoin
 
-from ..parser.player_parser import PlayerParser
+import httpx
 
-from exceptions import StatusError, NotFindError
+from ..parser.player_parser import PlayerParser, PlayerPart
+from ..parser.mpd_parser import MpdParser
+
+from exceptions import StatusError, NotFindError, DataIncorrectError
 
 
 class BasePlayer(ABC):
@@ -128,3 +132,47 @@ class BasePlayer(ABC):
 
         elif not data.get("content"):
             raise NotFindError("Не был обнаружен 'content'")
+        
+        
+class BaseMpd(ABC):
+    """Базовый класс для получения MPD данных"""
+    
+    def __init__(self, engine: str = 'html.parser', domain: str = 'https://animego.me'):
+        self.engine = engine
+        self.domain = domain
+        self._headers = {
+            'Referer': domain,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        self._parser = MpdParser(self.engine)
+    
+    @staticmethod
+    def _normalize_url(url: Union[str, PlayerPart]) -> str:
+        """Нормализует URL, добавляя схему https://"""
+        if isinstance(url, str):
+            url_str = url
+        elif isinstance(url, PlayerPart):
+            url_str = url.url
+        else:
+            raise TypeError(f"Неподдерживаемый тип: {type(url).__name__}")
+        
+        return urljoin('https:', url_str)
+    
+    @abstractmethod
+    def get_mpd(self, url: Union[str, PlayerPart]) -> str:
+        """Получить MPD URL"""
+        pass
+    
+    def _fetch(self, url: str, method: str = "GET", **kwargs) -> str:
+        """Выполнить HTTP запрос"""
+        headers = {**self._headers, **kwargs.pop('headers', {})}
+        
+        try:
+            with httpx.Client(timeout=30.0) as client:
+                response = client.request(method, url, headers=headers, **kwargs)
+                response.raise_for_status()
+                return response.text
+        except httpx.HTTPStatusError as e:
+            raise DataIncorrectError(f"HTTP error {e.response.status_code} for {url}") from e
+        except httpx.RequestError as e:
+            raise DataIncorrectError(f"Request failed for {url}: {str(e)}") from e

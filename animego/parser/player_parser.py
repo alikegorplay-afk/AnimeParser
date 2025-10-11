@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup, _IncomingMarkup
 
 from exceptions.utils import not_find
 
-from ..models import PlayerPart, Player
+from ..models import PlayerPart, Player, PlayerParseInfo
 
 
 class PlayerParser:
@@ -30,7 +30,7 @@ class PlayerParser:
         """
         self.engine = engine
 
-    def parse_player(self, html_code: _IncomingMarkup) -> Player:
+    def parse_player(self, html_code: _IncomingMarkup) -> PlayerParseInfo:
         """
         Основной метод для парсинга страницы с видеоплеерами.
 
@@ -130,7 +130,7 @@ class PlayerParser:
         title: str,
         players_data: dict[str, list[dict[str, str]]],
         dubbing_data: dict[str, str],
-    ) -> Player:
+    ) -> PlayerParseInfo:
         """
         Создает итоговый объект Player из распарсенных данных.
 
@@ -140,17 +140,19 @@ class PlayerParser:
             dubbing_data (dict): Данные об озвучках
 
         Returns:
-            Player: Итоговый объект с информацией о плеерах
+            PlayerParseInfo: Итоговый объект с информацией о плеерах
         """
         player_instances = PlayerParser._create_player_instances(
             players_data, dubbing_data
         )
-        all_episode_ids = list(dubbing_data.keys())
+        all_dubbing_ids = list(dubbing_data.keys())
+        all_dubbing_title_ids = list(dubbing_data.values())
 
-        return Player(
+        return PlayerParseInfo(
             title=title,
-            ids=[int(episode_id) for episode_id in all_episode_ids],
-            players=player_instances,
+            all_dubbing=[int(episode_id) for episode_id in all_dubbing_ids],
+            all_players=all_dubbing_title_ids,
+            info=player_instances,
         )
 
     @staticmethod

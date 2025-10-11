@@ -101,6 +101,9 @@ class Player:
     title: str
     ids: List[int]
     players: List[PlayerPart]
+    
+    def __iter__(self):
+        return iter(self.players)
 
 
 @dataclass
@@ -130,3 +133,23 @@ class PlayerParseInfo:
     all_dubbing: List[int]
     all_players: List[str]
     info: List[Player]
+
+    def __iter__(self):
+        return iter(self.info)
+    
+    
+@dataclass
+class EmbedData:
+    id: str
+    domain: str
+    
+    duration: int # в секундах
+    
+    poster: str
+    
+    mpd_url: str
+    m3u8_url: str
+    
+    quality: bool
+    quality_video: int
+    rating: str

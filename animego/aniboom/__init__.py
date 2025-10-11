@@ -136,4 +136,6 @@ class AniBoom(BasicAnimeApi):
             >>> for player in player_info.players:
             ...     print(f"{player.title}: {player.url}")
         """
+        if isinstance(id, str) and id.startswith('http'):
+            id = id.split("-")[-1]
         return self._player.get_info(id)

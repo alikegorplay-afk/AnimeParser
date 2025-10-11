@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from ..parser import AnimeBoomPageParser
 
 from core.pagination import AsyncBasePagination
-from exceptions.utils import not_find
 
 
 class AsyncAniBoomPagination(AsyncBasePagination):
