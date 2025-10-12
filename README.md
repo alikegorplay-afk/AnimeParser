@@ -14,9 +14,7 @@
 ## 📦 Установка
 
 ```bash
-git clone https://github.com/your-username/animeboom-parser.git
-cd animeboom-parser
-pip install -r requirements.txt
+pip install git+https://github.com/alikegorplay-afk/AnimeParser.git
 ```
 
 ## 🚀 Быстрый старт
