@@ -1,13 +1,16 @@
 from urllib.parse import quote, urljoin
+from contextlib import asynccontextmanager 
 
 import httpx
+import aiofiles
 
 from core.parsers import BasicAnimeApi
 
 from ..parser.anime_parser import AnimeBoomParser
+from ..models import PlayerPart
 from .pagination import AsyncAniBoomPagination
 from .player import AsyncPlayer
-
+from .mpd import AsyncMpdController
 
 class AsyncAniBoom(BasicAnimeApi):
     """
@@ -54,6 +57,7 @@ class AsyncAniBoom(BasicAnimeApi):
         super().__init__(domen, engine)
         self._aniboom = AnimeBoomParser(engine)
         self._player = AsyncPlayer(session, domen, engine)
+        self._mpd = AsyncMpdController(session, engine, domen)
         self.session = session
 
     async def get_info(self, url: str):
@@ -157,3 +161,32 @@ class AsyncAniBoom(BasicAnimeApi):
             ...         print(f"{player.title}: {player.dubbing_name}")
         """
         return await self._player.get_info(id)
+    
+    def get_aniboom_data(self, url: str | PlayerPart):
+        return self._mpd.get_full_data(url)
+    
+    async def get_mpd_content(self, url: str | PlayerPart) -> str:
+        """Получить содержимое MPD файла"""
+        return await self._mpd.get_mpd(url)
+         
+    async def save_mpd_to_file(self, url: str | PlayerPart, filename: str):
+        """Сохранить MPD в файл"""
+        async with aiofiles.open(filename, 'w') as f:
+            await f.write(
+                await self.get_mpd_content(url)
+            )
+    
+    @classmethod
+    @asynccontextmanager 
+    async def create_session(cls, engine: str = "html.parser", domen: str = "https://animego.me"):
+        session = None
+        try:
+            async with httpx.AsyncClient() as session:
+                yield cls(session, engine, domen)
+        finally:
+            if session is None:
+                return
+            elif not session.is_closed:
+                session.aclose()
+            else:
+                return

@@ -160,7 +160,7 @@ class BaseMpd(ABC):
     
     @abstractmethod
     def get_mpd(self, url: Union[str, PlayerPart]) -> str:
-        """Получить MPD URL"""
+        """Получить MPD"""
         pass
     
     def _fetch(self, url: str, method: str = "GET", **kwargs) -> str:

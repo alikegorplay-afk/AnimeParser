@@ -4,9 +4,11 @@ import httpx
 
 from core.parsers import BasicAnimeApi
 
+from ..models import PlayerPart
 from ..parser import AnimeBoomParser
 from .pagination import AniBoomPagination
 from .player import Player
+from .mpd import MpdController
 
 
 class AniBoom(BasicAnimeApi):
@@ -33,17 +35,18 @@ class AniBoom(BasicAnimeApi):
         >>> players = client.get_player_info(123)
     """
     
-    def __init__(self, engine: str = "html.parser", domen: str = "https://animego.me"):
+    def __init__(self, engine: str = "html.parser", domain: str = "https://animego.me"):
         """
         Инициализирует клиент AnimeBoom.
         
         Args:
             engine (str): Движок для парсинга HTML
-            domen (str): Базовый URL сайта AnimeBoom
+            domain (str): Базовый URL сайта AnimeBoom
         """
-        super().__init__(domen, engine)
+        super().__init__(domain, engine)
         self._aniboom = AnimeBoomParser(engine)
-        self._player = Player(domen, engine)
+        self._player = Player(domain, engine)
+        self._mpd = MpdController(engine, domain)
 
     def get_info(self, url: str):
         """
@@ -139,3 +142,18 @@ class AniBoom(BasicAnimeApi):
         if isinstance(id, str) and id.startswith('http'):
             id = id.split("-")[-1]
         return self._player.get_info(id)
+    
+    def get_aniboom_data(self, url: str | PlayerPart):
+        return self._mpd.get_full_data(url)
+    
+    def get_mpd_content(self, url: str | PlayerPart) -> str:
+        """Получить содержимое MPD файла"""
+        return self._mpd.get_mpd(url)
+        
+        
+    def save_mpd_to_file(self, url: str | PlayerPart, filename: str):
+        """Сохранить MPD в файл"""
+        with open(filename, 'w') as f:
+            f.write(
+                self.get_mpd_content(url)
+            )

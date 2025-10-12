@@ -9,6 +9,12 @@ from exceptions import DataIncorrectError
 class MpdController(BaseMpd):
     """Контроллер для получения видео данных"""
     
+    def get_mpd(self, url: str | PlayerPart) -> str:
+        """Получить MPD"""
+        return self._fetch(
+            self.get_mpd_url(url)
+        )
+    
     def get_m3u8_url(self, url: str | PlayerPart) -> str:
         """Получить M3U8 URL"""
         return self.get_full_data(url).m3u8_url
@@ -41,3 +47,4 @@ class MpdController(BaseMpd):
         normalized_url = self._normalize_url(url)
         html_content = self._fetch(normalized_url)
         return self._parser.parse_aniboom_html(html_content)
+    

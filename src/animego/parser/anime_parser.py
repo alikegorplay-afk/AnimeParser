@@ -134,7 +134,7 @@ class AnimeBoomParser(BasicAnimeParser):
             str: Текст описания аниме или пустая строка, если не найден.
         """
         if description := soup.find("div", class_="description"):
-            return description.get_text(strip=True)
+            return ' '.join(description.get_text().split())
         return ""
 
     def _find_info(self, soup: BeautifulSoup):
