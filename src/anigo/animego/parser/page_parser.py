@@ -1,4 +1,4 @@
-from core.parsers import BasicAnimeParserMini
+from ...core.parsers import BasicAnimeParserMini
 from ...exceptions.utils import not_find
 
 

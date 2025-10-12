@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 from ...core.parsers import BasicAnimeParser, AnimeRow
-from exceptions.utils import not_find
+from ...exceptions.utils import not_find
 from ..models import AniBoomAnime
 
 
