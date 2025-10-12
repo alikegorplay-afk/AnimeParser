@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from ..parser import AnimeBoomPageParser
 
-from core.pagination import BasePagination
+from ...core.pagination import BasePagination
 
 
 class AniBoomPagination(BasePagination):

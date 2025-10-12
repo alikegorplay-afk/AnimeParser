@@ -4,7 +4,7 @@ import httpx
 
 from ..models import PlayerPart, EmbedData
 from ..core.abstract import BaseMpd
-from exceptions import DataIncorrectError
+from ...exceptions import DataIncorrectError
 
 
 class AsyncMpdController(BaseMpd):

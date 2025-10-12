@@ -1,4 +1,4 @@
-from exceptions import NotFindError
+from ..exceptions import NotFindError
 
 
 def not_find(query: str) -> NotFindError:

@@ -2,7 +2,7 @@ from urllib.parse import quote, urljoin
 
 import httpx
 
-from core.parsers import BasicAnimeApi
+from ...core.parsers import BasicAnimeApi
 
 from ..models import PlayerPart
 from ..parser import AnimeBoomParser

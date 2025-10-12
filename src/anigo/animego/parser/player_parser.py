@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from bs4 import BeautifulSoup, _IncomingMarkup
 
-from exceptions.utils import not_find
+from ...exceptions.utils import not_find
 
 from ..models import PlayerPart, Player, PlayerParseInfo
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from core.models import BaseAnimeInfo
+from ...core.models import BaseAnimeInfo
 
 
 @dataclass

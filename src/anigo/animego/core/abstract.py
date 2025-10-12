@@ -7,7 +7,7 @@ import httpx
 from ..parser.player_parser import PlayerParser, PlayerPart
 from ..parser.mpd_parser import MpdParser
 
-from exceptions import StatusError, NotFindError, DataIncorrectError
+from ...exceptions import StatusError, NotFindError, DataIncorrectError
 
 
 class BasePlayer(ABC):

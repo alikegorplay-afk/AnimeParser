@@ -6,7 +6,7 @@ __all__ = [
     "AnimeBoomParser",
 ]
 
-from animego import (
+from .animego import (
     AniBoom, 
     AsyncAniBoom, 
     PlayerParser, 

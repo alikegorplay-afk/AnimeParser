@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import httpx
 import aiofiles
 
-from core.parsers import BasicAnimeApi
+from ...core.parsers import BasicAnimeApi
 
 from ..parser.anime_parser import AnimeBoomParser
 from ..models import PlayerPart

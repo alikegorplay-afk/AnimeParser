@@ -2,7 +2,7 @@ import json
 
 from bs4 import BeautifulSoup
 
-from exceptions import DataIncorrectError, not_find
+from ...exceptions import DataIncorrectError, not_find
 
 class MpdParser:
     """Парсер HTML страниц для извлечения видео данных"""
