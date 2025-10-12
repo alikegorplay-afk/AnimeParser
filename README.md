@@ -20,7 +20,7 @@ pip install git+https://github.com/alikegorplay-afk/AnimeParser.git
 ## 🚀 Быстрый старт
 
 ```python
-from animego import AniBoom
+from anigo import AniBoom
 
 # Создаем экземпляр API
 api = AniBoom()
