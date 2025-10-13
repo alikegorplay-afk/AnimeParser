@@ -26,7 +26,7 @@ class MpdController(BaseMpd):
     def get_full_data(self, url: str | PlayerPart) -> EmbedData:
         """Получить все данные видео"""
         embed_data = self._fetch_embed_data(url)
-        
+        print(embed_data)
         try:
             return EmbedData(
                 id=embed_data['id'],

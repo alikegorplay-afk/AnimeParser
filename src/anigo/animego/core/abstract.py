@@ -4,8 +4,12 @@ from urllib.parse import urljoin
 
 import httpx
 
+from bs4 import Tag
+
 from ..parser.player_parser import PlayerParser, PlayerPart
 from ..parser.mpd_parser import MpdParser
+
+from ..models import CvhData, CvhItems
 
 from ...exceptions import StatusError, NotFindError, DataIncorrectError
 
@@ -176,3 +180,53 @@ class BaseMpd(ABC):
             raise DataIncorrectError(f"HTTP error {e.response.status_code} for {url}") from e
         except httpx.RequestError as e:
             raise DataIncorrectError(f"Request failed for {url}: {str(e)}") from e
+        
+
+class BaseCVH:
+    """
+    Класс для работы с видео-контентом через CDN Videohub API.
+    
+    Attributes:
+        URL_PLAYLIST (str): URL endpoint для получения плейлиста
+        engine (str): Парсер для BeautifulSoup (по умолчанию 'html.parser')
+        domain (str): Домен сайта (по умолчанию 'https://animego.me')
+        _mpd (MpdController): Контроллер для работы с MPD-потоками
+    """
+    
+    URL_PLAYLIST = 'https://plapi.cdnvideohub.com/api/v1/player/sv/playlist'
+    URL_VIDEO = 'https://plapi.cdnvideohub.com/api/v1/player/sv/video/'
+    
+    def __init__(self, engine: str = "html.parser", domain: str = "https://animego.me"):
+        """
+        Инициализация CVH-парсера.
+        
+        Args:
+            engine: Парсер для BeautifulSoup (по умолчанию 'html.parser')
+            domain: Базовый домен сайта (по умолчанию 'https://animego.me')
+        """
+        self.engine = engine
+        self.domain = domain
+    
+    def _build_playlist_params(self, player: Tag) -> dict:
+        return {
+            'pub': player['data-publisher-id'],
+            'aggr': player['data-aggregator'], 
+            'id': player['data-title-id'],
+        }
+    
+    def _data_correct(self, data: dict) -> CvhData:
+        return CvhData(
+            title=data['titleName'],
+            is_serial=data['isSerial'],
+            items=[
+                CvhItems(
+                    cvh_id=item['cvhId'],
+                    name=item['name'],
+                    vk_id = item['vkId'],
+                    voice_studio = item['voiceStudio'],
+                    voice_type = item['voiceType'],
+                    season = item['season'],
+                    episode = item['episode']
+                    ) for item in data['items']
+            ]
+        )

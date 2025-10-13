@@ -150,7 +150,7 @@ class PlayerParser:
 
         return PlayerParseInfo(
             title=title,
-            all_dubbing=[int(episode_id) for episode_id in all_dubbing_ids],
+            all_dubbing=all_dubbing_ids,
             all_players=all_dubbing_title_ids,
             info=player_instances,
         )
@@ -201,7 +201,7 @@ class PlayerParser:
                 PlayerPart(
                     title=player_name,
                     url=episode_url,
-                    dubbing_id=int(episode_id),
+                    dubbing_id=episode_id,
                     dubbing_name=dubbing_data.get(episode_id),
                 )
             )

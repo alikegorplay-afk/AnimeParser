@@ -4,7 +4,7 @@ import httpx
 
 from ...core.parsers import BasicAnimeApi
 
-from ..models import PlayerPart
+from ..models import PlayerPart, AniBoomAnime
 from ..parser import AnimeBoomParser
 from .pagination import AniBoomPagination
 from .player import Player
@@ -124,7 +124,7 @@ class AniBoom(BasicAnimeApi):
             self.engine,
         )
 
-    def get_player_info(self, id: str | int):
+    def get_player_info(self, id: str | int | AniBoomAnime):
         """
         Получает информацию о видео-плеерах для конкретного аниме.
         
@@ -139,8 +139,14 @@ class AniBoom(BasicAnimeApi):
             >>> for player in player_info.players:
             ...     print(f"{player.title}: {player.url}")
         """
-        if isinstance(id, str) and id.startswith('http'):
+        if isinstance(id, AniBoomAnime):
+            id = id.ID
+        elif isinstance(id, str) and id.startswith('http'):
             id = id.split("-")[-1]
+        elif isinstance(id, int):
+            id = id
+        else:
+            raise TypeError(f"Неподдерживаемый тип: {type(id).__name__}")
         return self._player.get_info(id)
     
     def get_aniboom_data(self, url: str | PlayerPart):
@@ -157,3 +163,7 @@ class AniBoom(BasicAnimeApi):
             f.write(
                 self.get_mpd_content(url)
             )
+            
+    def fetch_by_animego(self, url: str, *args, **kwargs):
+        """Делает запрос от имени AnimeGo"""
+        return self._mpd._fetch(url, *args, **kwargs)

@@ -130,7 +130,7 @@ class PlayerParseInfo:
     """
 
     title: str
-    all_dubbing: List[int]
+    all_dubbing: List[str]
     all_players: List[str]
     info: List[Player]
 
@@ -140,16 +140,103 @@ class PlayerParseInfo:
     
 @dataclass
 class EmbedData:
+    """
+    Данные для встраивания видео-плеера.
+
+    Содержит техническую информацию о видео-контенте
+    для воспроизведения через MPD/HLS протоколы.
+
+    Attributes:
+        id: Уникальный идентификатор видео
+        domain: Домен источника видео
+        duration: Длительность видео в секундах
+        poster: URL постера/превью видео
+        mpd_url: URL MPD-манифеста (MPEG-DASH)
+        m3u8_url: URL M3U8-плейлиста (HLS)
+        quality: Флаг доступности качества видео
+        quality_video: Числовое значение качества (например, 1080)
+        rating: Рейтинг видео (возможно, возрастной рейтинг)
+
+    Example:
+        >>> embed = EmbedData(
+        ...     id="video_12345",
+        ...     domain="example.com",
+        ...     duration=1440,
+        ...     poster="https://example.com/poster.jpg",
+        ...     mpd_url="https://example.com/video.mpd",
+        ...     m3u8_url="https://example.com/video.m3u8",
+        ...     quality=True,
+        ...     quality_video=1080,
+        ...     rating="R"
+        ... )
+    """
     id: str
     domain: str
-    
-    duration: int # в секундах
-    
+    duration: int  # в секундах
     poster: str
-    
     mpd_url: str
     m3u8_url: str
-    
     quality: bool
     quality_video: int
     rating: str
+
+@dataclass
+class CvhItems:
+    """
+    Элемент видео-контента из CVH API.
+
+    Представляет отдельную серию/сезон с мета-информацией
+    о локализации и техническими параметрами.
+
+    Attributes:
+        cvh_id: Уникальный идентификатор в системе CVH
+        name: Название элемента (обычно пустое)
+        vk_id: Идентификатор связанного VK контента
+        voice_studio: Студия озвучки
+        voice_type: Тип озвучки (дубляж, многоголосый, и т.д.)
+        season: Номер сезона
+        episode: Номер эпизода
+
+    Example:
+        >>> cvh_item = CvhItems(
+        ...     cvh_id="cvh_67890",
+        ...     name="",
+        ...     vk_id="vk_54321",
+        ...     voice_studio="AniLibria",
+        ...     voice_type="multi",
+        ...     season=1,
+        ...     episode=5
+        ... )
+    """
+    cvh_id: str
+    name: str  # Обычно пустой
+    vk_id: str
+    voice_studio: str
+    voice_type: str
+    season: int
+    episode: int
+
+
+@dataclass
+class CvhData:
+    """
+    Основная структура данных видео-контента от CVH API.
+
+    Содержит общую информацию о видео и список всех
+    доступных элементов (серий/сезонов).
+
+    Attributes:
+        title: Название видео-контента
+        isSerial: Флаг, указывающий что это сериал (True) или фильм (False)
+        items: Список всех доступных видео-элементов
+
+    Example:
+        >>> cvh_data = CvhData(
+        ...     title="Атака титанов",
+        ...     isSerial=True,
+        ...     items=[cvh_item1, cvh_item2, cvh_item3]
+        ... )
+    """
+    title: str
+    is_serial: bool
+    items: List[CvhItems]

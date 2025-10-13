@@ -7,7 +7,7 @@ import aiofiles
 from ...core.parsers import BasicAnimeApi
 
 from ..parser.anime_parser import AnimeBoomParser
-from ..models import PlayerPart
+from ..models import PlayerPart, AniBoomAnime
 from .pagination import AsyncAniBoomPagination
 from .player import AsyncPlayer
 from .mpd import AsyncMpdController
@@ -160,6 +160,14 @@ class AsyncAniBoom(BasicAnimeApi):
             ...     for player in player_info.players:
             ...         print(f"{player.title}: {player.dubbing_name}")
         """
+        if isinstance(id, AniBoomAnime):
+            id = id.ID
+        elif isinstance(id, str) and id.startswith('http'):
+            id = id.split("-")[-1]
+        elif isinstance(id, int):
+            id = id
+        else:
+            raise TypeError(f"Неподдерживаемый тип: {type(id).__name__}")
         return await self._player.get_info(id)
     
     def get_aniboom_data(self, url: str | PlayerPart):

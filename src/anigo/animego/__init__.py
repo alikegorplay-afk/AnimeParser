@@ -24,9 +24,11 @@ __all__ = [
     "PlayerParser",
     "AnimeBoomPageParser",
     "AnimeBoomParser",
+    "CvhManager"
 ]
 
 from .aniboom import AniBoom
 from .aniboom_async import AsyncAniBoom
+from .cvh import CVH as CvhManager
 
 from .parser import PlayerParser, AnimeBoomParser, AnimeBoomPageParser
